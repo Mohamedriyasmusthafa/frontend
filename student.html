@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="navbar">
+<h1>👨‍🎓Student Dashboard</h1>
+<a href="login.html">Logout</a>
+</div>
+
+<h3>Rank List</h3>
+<table border="1" id="rankTable">
+<thead><tr><th>Rank</th><th>Name</th><th>Roll</th><th>Marks</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<script>
+async function fetchRankList(){
+    const res = await fetch('http://localhost:3000/student/ranklist');
+    const students = await res.json();
+    const tbody=document.querySelector('#rankTable tbody');
+    tbody.innerHTML='';
+    students.forEach((s,i)=>{
+        tbody.innerHTML+=`<tr><td>${i+1}</td><td>${s.name}</td><td>${s.roll}</td><td>${s.marks}</td></tr>`;
+    });
+}
+
+fetchRankList();
+</script>
+</body>
+</html>

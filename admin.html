@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="navbar">
+<h1>🧑‍💻Admin Dashboard</h1>
+<a href="login.html">Logout</a>
+</div>
+
+<h3>Update Student Marks</h3>
+<input type="text" id="updateRoll" placeholder="Roll">
+<input type="number" id="updateMarks" placeholder="Marks">
+<button onclick="updateMarks()">Update</button>
+
+<h3>All Students</h3>
+<table border="1" id="studentsTable">
+<thead><tr><th>ID</th><th>Name</th><th>Roll</th><th>Marks</th></tr></thead>
+<tbody></tbody>
+</table>
+
+<script>
+async function fetchStudents(){
+    const res = await fetch('http://localhost:3000/admin/students');
+    const students = await res.json();
+    const tbody = document.querySelector('#studentsTable tbody');
+    tbody.innerHTML='';
+    students.forEach(s=>{
+        tbody.innerHTML+=`<tr><td>${s.id}</td><td>${s.name}</td><td>${s.roll}</td><td>${s.marks}</td></tr>`;
+    });
+}
+
+async function updateMarks(){
+    const roll = document.getElementById('updateRoll').value;
+    const marks = document.getElementById('updateMarks').value;
+    if(!roll||!marks){alert("Enter roll and marks");return;}
+    const res = await fetch(`http://localhost:3000/admin/students/${roll}`,{
+        method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({marks})
+    });
+    const data = await res.json();
+    alert(data.message);
+    fetchStudents();
+}
+
+fetchStudents();
+</script>
+</body>
+</html>

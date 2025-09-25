@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <h1>Staff Dashboard</h1>
+  <div>
+    <a href="login.html">Logout</a>
+  </div>
+</div>
+
+<!-- Add Student Section -->
+<h3>Add New Student</h3>
+<input type="text" id="studentName" placeholder="Name">
+<input type="text" id="studentRoll" placeholder="Roll">
+<input type="number" id="studentMarks" placeholder="Marks">
+<button onclick="addStudent()">Add Student</button>
+
+<!-- Students List -->
+<h3>All Students</h3>
+<table border="1" id="studentsTable">
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Roll</th>
+<th>Marks</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<script>
+// Fetch all students
+async function fetchStaffStudents() {
+    const res = await fetch('http://localhost:3000/staff/students');
+    const students = await res.json();
+    const tbody = document.querySelector('#studentsTable tbody');
+    tbody.innerHTML = '';
+    students.forEach(s => {
+        tbody.innerHTML += `<tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.roll}</td>
+            <td>${s.marks}</td>
+        </tr>`;
+    });
+}
+
+// Add new student
+async function addStudent() {
+    const name = document.getElementById('studentName').value.trim();
+    const roll = document.getElementById('studentRoll').value.trim();
+    const marks = document.getElementById('studentMarks').value.trim();
+
+    if(!name || !roll || !marks){
+        alert('Fill all fields');
+        return;
+    }
+
+    const res = await fetch('http://localhost:3000/staff/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, roll, marks })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    fetchStaffStudents();
+}
+
+// Initial load
+fetchStaffStudents();
+</script>
+</body>
+</html>
